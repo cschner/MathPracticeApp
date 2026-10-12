@@ -1,0 +1,142 @@
+# Name: Caleb Schneringer
+# Date: 3/21/2026
+# Program: Math Application Tk
+# Discription: Creates the GUI for Math_Application
+
+# Imports
+from tkinter import *
+from tkinter import messagebox
+import sys
+import os
+
+module_dir = r"D:\Projects\Python\SFCC\Math_Application\Math_Application"
+sys.path.insert(0, module_dir)
+
+import Math_Application
+
+
+class MathApp:
+    def __init__(self, root):
+        self.root = root
+
+        self.score = 0
+        self.difficulty = "easy"
+        self.problem_type = ""
+        self.numbers_list = ""
+
+        # Window config
+        root.title("Math Application")
+        root.geometry("850x650")
+        root.configure(bg="lightblue", padx=10, pady=10)
+
+        root.grid_columnconfigure(0, weight=1)
+        root.grid_columnconfigure(1, weight=0)
+        root.grid_columnconfigure(2, weight=3)
+
+        # ---------------- Widgets ----------------
+
+        # Buttons
+        self.check_answer_btn = Button(root, text="Check Answer",
+                                       command=self.check_answer,
+                                       bg="skyblue", width=100, height=4)
+        self.check_answer_btn.grid(column=2, row=2, pady=5)
+
+
+        self.create_problem_btn = Button(root, text="Create Problem",
+                                         command=lambda: self.create_problem(self.difficulty),
+                                         width=20, height=4, bg="skyblue")
+        self.create_problem_btn.grid(column=1, row=2)
+
+
+        self.exit_button = Button(root, text="Exit and Save",
+                                  command=self.exit_and_save,
+                                  bg="red")
+        self.exit_button.grid(column=2, row=4, pady=20)
+
+
+        self.easy_button = Button(root, text="EASY",
+                                  command=self.easy_difficulty,
+                                  width=20, height=4, bg="skyblue")
+        self.easy_button.grid(column=1, row=7, pady=10, padx=30)
+
+
+        self.medium_button = Button(root, text="NORMAL",
+                                    command=self.medium_difficulty,
+                                    width=20, height=4, bg="skyblue")
+        self.medium_button.grid(column=2, row=7, pady=10)
+
+
+        self.hard_button = Button(root, text="HARD",
+                                  command=self.hard_difficulty,
+                                  width=20, height=4, bg="skyblue")
+        self.hard_button.grid(column=3, row=7, pady=10, padx=30)
+
+        # Labels
+        self.problem_label = Label(root, text="Problem",
+                                   bg="lightblue", width=200, height=4,
+                                   font=("Arial", 20))
+        self.problem_label.grid(column=2, row=0, pady=5)
+
+
+        self.score_label = Label(root, text=f"SCORE:{self.score}",
+                                 bg="lightblue", width=200, height=4,
+                                 font=("Ariel", 10))
+        self.score_label.grid(column=2, row=3)
+
+
+        self.difficulty_label = Label(root, text="Difficulty",
+                                      font=("Arial", 20), bg="lightblue")
+        self.difficulty_label.grid(column=2, row=5, pady=30)
+
+
+        self.current_difficulty = Label(root, text="Current Difficulty: EASY",
+                                        font=("Arial", 10), bg="lightblue")
+        self.current_difficulty.grid(column=2, row=6)
+
+        # Entry
+        self.answer_entry = Entry(root, width=20, justify="center",
+                                  font=("Arial", 20))
+        self.answer_entry.grid(column=2, row=1, pady=5)
+
+    # ---------------- Methods ----------------
+
+    def update_problem_label(self, math_text):
+        self.problem_label.config(text=math_text)
+
+    def create_problem(self, difficulty):
+        self.problem_type = Math_Application.Problem_Type_Chooser(difficulty.lower())
+        self.numbers_list = Math_Application.Generate_Numbers(self.problem_type)
+        problem = Math_Application.Problem_Formater(self.numbers_list, self.problem_type)
+        self.update_problem_label(problem)
+
+    def check_answer(self):
+        user_text = self.answer_entry.get()
+        answer = Math_Application.Problem_Answer(self.numbers_list, self.problem_type)
+        result = Math_Application.Find_Results(answer, user_text)
+        messagebox.showinfo("RESULTS", result)
+
+    def update_score(self):
+        pass
+
+    def exit_and_save(self):
+        pass
+
+    def update_difficulty_label(self):
+        pass
+
+    def easy_difficulty(self):
+        self.current_difficulty.config(text="Current Difficulty: EASY")
+        self.difficulty = "easy"
+
+    def medium_difficulty(self):
+        self.current_difficulty.config(text="Current Difficulty: NORMAL")
+        self.difficulty = "normal"
+
+    def hard_difficulty(self):
+        self.current_difficulty.config(text="Current Difficulty: HARD")
+        self.difficulty = "hard"
+
+# Run the app
+root = Tk()
+app = MathApp(root)
+root.mainloop()
